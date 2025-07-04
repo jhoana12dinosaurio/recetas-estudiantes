@@ -3,11 +3,12 @@ import React, { createContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { Recipe } from '../types/Recipe';
 import recetasData from '../data/recetas.json';
+import * as favoritesService from '../services/favoriteService';
 
 interface RecipeContextType {
   recetas: Recipe[];
-  favoritos: number[];
-  addToFavoritos: (id: number) => void;
+  favoritos: Recipe[];
+  addToFavoritos: (receta: Recipe) => void;
   removeFromFavoritos: (id: number) => void;
   isFavorito: (id: number) => boolean;
   addReceta: (receta: Omit<Recipe, 'id'>) => void;
@@ -21,31 +22,28 @@ interface RecipeProviderProps {
 
 export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
   const [recetas, setRecetas] = useState<Recipe[]>(recetasData.recetas as Recipe[]);
-  const [favoritos, setFavoritos] = useState<number[]>([]);
+  const [favoritos, setFavoritos] = useState<Recipe[]>([]);
 
-  // useEffect para cargar favoritos del localStorage
   useEffect(() => {
-    const favoritosGuardados = localStorage.getItem('favoritos');
-    if (favoritosGuardados) {
-      setFavoritos(JSON.parse(favoritosGuardados));
-    }
+    setFavoritos(favoritesService.getFavorites());
   }, []);
 
-  // useEffect para guardar favoritos en localStorage
   useEffect(() => {
-    localStorage.setItem('favoritos', JSON.stringify(favoritos));
+    favoritesService.saveFavorites(favoritos);
   }, [favoritos]);
 
-  const addToFavoritos = (id: number) => {
-    setFavoritos(prev => [...prev, id]);
+  const addToFavoritos = (receta: Recipe) => {
+    if (!favoritos.some(fav => fav.id === receta.id)) {
+      setFavoritos(prev => [...prev, receta]);
+    }
   };
 
   const removeFromFavoritos = (id: number) => {
-    setFavoritos(prev => prev.filter(favId => favId !== id));
+    setFavoritos(prev => prev.filter(fav => fav.id !== id));
   };
 
   const isFavorito = (id: number) => {
-    return favoritos.includes(id);
+    return favoritos.some(fav => fav.id === id);
   };
 
   const addReceta = (nuevaReceta: Omit<Recipe, 'id'>) => {
@@ -72,4 +70,3 @@ export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
     </RecipeContext.Provider>
   );
 };
-

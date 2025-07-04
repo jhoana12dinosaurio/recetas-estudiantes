@@ -1,28 +1,25 @@
+import type { Recipe } from '../types/Recipe';
+const FAVORITES_KEY = 'favoritos_recetas';
 
-const favorites = 'favoriteRecipes';
-
-export function getFavorites(): string[] {
-  const data = localStorage.getItem(favorites);
-  if (data) {
-    try {
-      return JSON.parse(data);
-    } catch {
-      return [];
-    }
-  }
-  return [];
+export function getFavorites(): Recipe[] {
+  const data = localStorage.getItem(FAVORITES_KEY);
+  return data ? JSON.parse(data) : [];
 }
 
-export function addFavorite(id: string): void {
+export function saveFavorites(favorites: Recipe[]): void {
+  localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+}
+
+export function addFavorite(recipe: Recipe): void {
   const current = getFavorites();
-  if (!current.includes(id)) {
-    const updated = [...current, id];
-    localStorage.setItem(favorites, JSON.stringify(updated));
+  const exists = current.some(r => r.id === recipe.id);
+  if (!exists) {
+    saveFavorites([...current, recipe]);
   }
 }
 
-export function removeFavorite(id: string): void {
+export function removeFavorite(recipeId: number): void {
   const current = getFavorites();
-  const updated = current.filter(favId => favId !== id);
-  localStorage.setItem(favorites, JSON.stringify(updated));
+  const updated = current.filter(r => r.id !== recipeId);
+  saveFavorites(updated);
 }

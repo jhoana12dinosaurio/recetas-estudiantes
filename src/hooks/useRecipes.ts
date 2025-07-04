@@ -1,14 +1,14 @@
 import { useContext, useState } from 'react';
 import { RecipeContext } from '../context/RecipeContext';
-import { Recipe } from '../types/Recipe';
+import { Recipe } from '../types'; // ✅ ya no dará error
 
 export const useRecipes = () => {
   const context = useContext(RecipeContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useRecipes debe ser usado dentro de un RecipeProvider');
   }
 
-  const { recipes } = context;
+  const recipes: Recipe[] = context.recipes ?? [];
 
   const [difficultyFilter, setDifficultyFilter] = useState<string | null>(null);
 
@@ -17,7 +17,7 @@ export const useRecipes = () => {
   };
 
   const filteredRecipes = difficultyFilter
-    ? recipes.filter((recipe: Recipe) => recipe.dificultad === difficultyFilter)
+    ? recipes.filter((recipe) => recipe.dificultad === difficultyFilter)
     : recipes;
 
   return {

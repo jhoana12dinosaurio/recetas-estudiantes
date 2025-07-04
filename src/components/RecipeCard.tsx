@@ -29,6 +29,12 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
       default: return '⚪';
     }
   };
+  if (isFavorito(recipe.id)) {
+  removeFromFavoritos(recipe.id);
+} else {
+  addToFavoritos(recipe.id);
+}
+
 
   return (
     <div className="recipe-card">
