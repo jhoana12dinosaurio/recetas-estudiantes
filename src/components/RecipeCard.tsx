@@ -8,12 +8,10 @@ interface RecipeCardProps {
 }
 
 const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
-  const { addToFavoritos, removeFromFavoritos, isFavorito } = useRecipes();
+  const { isFavorito, addToFavoritos, removeFromFavoritos } = useRecipes();
 
-  const handleFavoritoClick = (e: React.MouseEvent) => {
+  const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    e.stopPropagation();
-    
     if (isFavorito(recipe.id)) {
       removeFromFavoritos(recipe.id);
     } else {
@@ -29,12 +27,6 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
       default: return '⚪';
     }
   };
-  if (isFavorito(recipe.id)) {
-  removeFromFavoritos(recipe.id);
-} else {
-  addToFavoritos(recipe.id);
-}
-
 
   return (
     <div className="recipe-card">
@@ -48,11 +40,10 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
           }}
         />
         <button 
-          className={`favorite-btn ${isFavorito(recipe.id) ? 'active' : ''}`}
-          onClick={handleFavoritoClick}
-          aria-label={isFavorito(recipe.id) ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+          className="favorite-btn"
+          onClick={handleFavoriteClick}
         >
-          {isFavorito(recipe.id) ? '❤️' : '🤍'}
+          {isFavorito(recipe.id) ? '❤' : '🤍'}
         </button>
       </div>
       
@@ -60,7 +51,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
         <h3 className="recipe-title">{recipe.nombre}</h3>
         
         <div className="recipe-meta">
-          <span className="recipe-time">⏱️ {recipe.tiempo} min</span>
+          <span className="recipe-time">⏱ {recipe.tiempo} min</span>
           <span className="recipe-difficulty">
             {getDificultadEmoji(recipe.dificultad)} {recipe.dificultad}
           </span>
@@ -78,7 +69,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
           <span className="rating-number">{recipe.valoracion}</span>
         </div>
         
-        <Link to={`/receta/${recipe.id}`} className="recipe-link">
+        <Link to={/receta/${recipe.id}} className="recipe-link">
           Ver Receta Completa
         </Link>
       </div>
@@ -86,4 +77,4 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
   );
 };
 
-export default RecipeCard;
+export default RecipeCard;

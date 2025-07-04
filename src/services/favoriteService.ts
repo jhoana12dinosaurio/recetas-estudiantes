@@ -1,25 +1,32 @@
-import type { Recipe } from '../types/Recipe';
-const FAVORITES_KEY = 'favoritos_recetas';
+export const favoritesService = {
+  getFavorites: (): number[] => {
+    try {
+      const favorites = localStorage.getItem('favoritos'); 
+      return favorites ? JSON.parse(favorites) : [];
+    } catch (error) {
+      console.error('Error al obtener favoritos:', error);
+      return [];
+    }
+  },
 
-export function getFavorites(): Recipe[] {
-  const data = localStorage.getItem(FAVORITES_KEY);
-  return data ? JSON.parse(data) : [];
-}
+  addFavorite: (recipeId: number): void => {
+    try {
+      const favorites = favoritesService.getFavorites();
+      if (!favorites.includes(recipeId)) {
+        const updatedFavorites = [...favorites, recipeId];
+        localStorage.setItem('favoritos', JSON.stringify(updatedFavorites)); 
+      }
+    } catch (error) {
+      console.error('Error al agregar favorito:', error);
+    }
+  },
 
-export function saveFavorites(favorites: Recipe[]): void {
-  localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+  removeFavorite: (recipeId: number): void => {
+    try {
+      const favorites = favoritesService.getFavorites();
+      const updatedFavorites = favorites.filter(id => id !== recipeId);
+      localStorage.setItem('favoritos', JSON.stringify(updatedFavorites));
+    } catch (error) {
+      console.error('Error al remover favorito:', error);}
 }
-
-export function addFavorite(recipe: Recipe): void {
-  const current = getFavorites();
-  const exists = current.some(r => r.id === recipe.id);
-  if (!exists) {
-    saveFavorites([...current, recipe]);
-  }
-}
-
-export function removeFavorite(recipeId: number): void {
-  const current = getFavorites();
-  const updated = current.filter(r => r.id !== recipeId);
-  saveFavorites(updated);
-}
+};

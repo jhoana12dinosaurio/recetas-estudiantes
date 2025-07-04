@@ -1,29 +1,30 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useMemo } from 'react';
 import { RecipeContext } from '../context/RecipeContext';
-import type { Recipe } from '../types';
+import type { Recipe } from '../types/Recipe';
 
 export const useRecipes = () => {
   const context = useContext(RecipeContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useRecipes debe ser usado dentro de un RecipeProvider');
   }
 
-  const recipes: Recipe[] = context.recipes ?? [];
+  const [difficultyFilter, setDifficultyFilter] = useState<'fácil' | 'medio' | 'difícil' | ''>('');
 
-  const [difficultyFilter, setDifficultyFilter] = useState<string | null>(null);
-
-  const filterByDifficulty = (difficulty: 'Fácil' | 'Intermedio' | 'Difícil') => {
+  const filterByDifficulty = (difficulty: 'fácil' | 'medio' | 'difícil' | '') => {
     setDifficultyFilter(difficulty);
   };
 
-  const filteredRecipes = difficultyFilter
-    ? recipes.filter((recipe) => recipe.dificultad === difficultyFilter)
-    : recipes;
+  const filteredRecipes = useMemo(() => {
+    if (!difficultyFilter) {
+      return context.recetas; 
+    }
+    return context.recetas.filter((recipe: Recipe) => recipe.dificultad === difficultyFilter);
+  }, [context.recetas, difficultyFilter]);
 
   return {
     ...context,
-    recipes: filteredRecipes,
-    filterByDifficulty,
     difficultyFilter,
-  };
+    filterByDifficulty,
+    filteredRecipes
+};
 };
