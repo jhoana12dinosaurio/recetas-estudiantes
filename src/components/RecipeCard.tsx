@@ -69,12 +69,13 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
           <span className="rating-number">{recipe.valoracion}</span>
         </div>
         
-        <Link to={/receta/${recipe.id}} className="recipe-link">
-          Ver Receta Completa
-        </Link>
+<Link to={`/receta/${recipe.id}`} className="recipe-link">
+  Ver Receta Completa
+</Link>
+
       </div>
     </div>
   );
 };
 
-export default RecipeCard;
+export default RecipeCard;
