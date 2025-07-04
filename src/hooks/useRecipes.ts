@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { RecipeContext } from '../context/RecipeContext';
-import { Recipe } from '../types'; 
+import { Recipe } from '../types/Recipe';
 
 export const useRecipes = () => {
   const context = useContext(RecipeContext);
