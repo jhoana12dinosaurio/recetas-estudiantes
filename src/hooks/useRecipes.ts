@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { RecipeContext } from '../context/RecipeContext';
-import { Recipe } from '../types'; // ✅ ya no dará error
+import type { Recipe } from '../types';
 
 export const useRecipes = () => {
   const context = useContext(RecipeContext);
